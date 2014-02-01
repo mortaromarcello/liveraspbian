@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# You can put local mirrors here if you want
+# kali_mirror=http://archive.kali.org/kali
+# kalisec_mirror=http://archive.kali.org/kali-security
+raspbian_mirror=http://mirrordirector.raspbian.org/raspbian
+
+### DO NOT EDIT THE REST OF THIS FILE ###
+
+# public_kali_mirror=http://http.kali.org/kali
+# public_kalisec_mirror=http://security.kali.org/kali-security
+
+
+# Detect target architecture and filter args
+
+arch="armhf"
+dist="wheezy"
+lb_opts=""
+lb_opts="$lb_opts --binary-images hdd --binary-filesystem ext4 --chroot-filesystem none"
+
+lb config noauto \
+	--distribution "$dist" \
+	--archive-areas "main contrib non-free" \
+	--architecture "$arch" \
+	--bootstrap cdebootstrap \
+	--cdebootstrap-options "--keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg --suite-config=wheezy" \
+	--keyring-packages raspbian-archive-keyring \
+	--updates false \
+	--backports false \
+	--source false \
+	--firmware-binary true \
+	--firmware-chroot true \
+	--mirror-bootstrap "$raspbian_mirror" \
+	--mirror-binary "$raspbian_mirror" \
+	--iso-application "liveraspbian" \
+	--iso-publisher "liveraspbian" \
+	--iso-volume "Raspbian Live" \
+	--linux-packages linux-image \
+	--bootappend-live "boot=live locales=it_IT.UTF-8 keyboard-layouts=it username=live-user hostname=liveraspbian" \
+	$lb_opts \
+	"$@"
